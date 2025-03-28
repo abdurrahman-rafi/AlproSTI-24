@@ -1,2 +1,3 @@
 # AlproSTI-24
-alpro sti 24
+FIle praktikum dan lainnya
+
