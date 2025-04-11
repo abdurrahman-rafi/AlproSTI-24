@@ -78,5 +78,5 @@ void cariKapalTerdekat(){
     }
 
     //dibawah hapus/komen aja kalau mau di submit
-    scanf("%d/n");
+    //scanf("%d/n");
 }
