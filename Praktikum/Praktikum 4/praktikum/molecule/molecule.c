@@ -41,9 +41,11 @@ void addAtom(Molecule *m, const char *symbol, int count) {
     }
 
     if(index<MAX_ATOM_TYPES){
-    strcpy(m->atoms[index].symbol, symbol); //Copy string pake string.h
-    m->atoms[index].count = count;
-    m->numAtomTypes++;
+        AtomInfo temp;
+        strcpy(temp.symbol, symbol); //Copy string pake string.h
+        temp.count = count;
+        m->atoms[index] = temp;
+        m->numAtomTypes++;
     }
 }
 
@@ -164,21 +166,17 @@ bool areEqual(const Molecule *m1, const Molecule *m2) {
         return false;
     }
 
-    Molecule copy1 = *m1;
-    Molecule copy2 = *m2;
+    sortMolecule(m1);
+    sortMolecule(m2);
 
-    sortMolecule(&copy1);
-    sortMolecule(&copy2);
-
-    for(int i = 0; i<copy1.numAtomTypes ; i++){
-        if(strcmp(copy1.atoms[i].symbol, copy2.atoms[i].symbol) != 0){ //Banding simbol
-            return false;
-        }
-        if(copy1.atoms[i].count != copy2.atoms[i].count){ // Banding jumlah
+    for(int i = 0; i<m1->numAtomTypes ; i++){
+        bool isSymbolEq = (strcmp(m1->atoms[i].symbol, m2->atoms[i].symbol));
+        bool isCountEq = (m1->atoms[i].count == m2->atoms[i].count);
+        if(!isSymbolEq || !isCountEq){
             return false;
         }
     }
-    
+
     return true;
 }
 
@@ -222,8 +220,9 @@ Molecule combineMolecules(const Molecule *m1, const Molecule *m2) {
  * @return true Jika m_sub dapat dikurangkan dari m_total, false jika tidak.
  */
 bool canSubtract(const Molecule *m_total, const Molecule *m_sub) {
-    Molecule total = *m_total;
-    Molecule sub = *m_sub;
+    if(m_sub->numAtomTypes == 0 ){
+        return true;
+    }
 
     sortMolecule(&total);
     sortMolecule(&sub);
@@ -266,26 +265,15 @@ Molecule subtractMolecule(const Molecule *m_total, const Molecule *m_sub) {
 
     // Sort both result and sub to match atom order
     sortMolecule(&result);
-    Molecule sortedSub = *m_sub;
-    sortMolecule(&sortedSub);
+    sortMolecule(m_sub);
 
+    int subx;
     for (int i = 0; i < result.numAtomTypes; i++) {
-        for (int j = 0; j < sortedSub.numAtomTypes; j++) {
-            if (strcmp(result.atoms[i].symbol, sortedSub.atoms[j].symbol) == 0) {
-                result.atoms[i].count -= sortedSub.atoms[j].count;
-                break;
-            }
+        if (strcmp(result.atoms[i].symbol,m_sub->atoms[subx].symbol) == 0){
+            result.atoms[i].count -= m_sub->atoms[subx].count;
+            subx++;
         }
     }
-
-    // Remove atoms with count <= 0
-    int k = 0;
-    for (int i = 0; i < result.numAtomTypes; i++) {
-        if (result.atoms[i].count > 0) {
-            result.atoms[k++] = result.atoms[i];
-        }
-    }
-    result.numAtomTypes = k;
 
     return result;
 }
