@@ -162,142 +162,109 @@ void sortMolecule(Molecule *m) {
  * tidak.
  */
 bool areEqual(const Molecule *m1, const Molecule *m2) {
-    if(m1->numAtomTypes != m2->numAtomTypes){
-        return false;
-    }
-
-    sortMolecule(m1);
-    sortMolecule(m2);
-
-    for(int i = 0; i<m1->numAtomTypes ; i++){
-        bool isSymbolEq = (strcmp(m1->atoms[i].symbol, m2->atoms[i].symbol));
-        bool isCountEq = (m1->atoms[i].count == m2->atoms[i].count);
-        if(!isSymbolEq || !isCountEq){
-            return false;
+    bool isEqual = true;
+    Molecule mm1 = *m1;
+    Molecule mm2 = *m2;
+    sortMolecule(&mm1);
+    sortMolecule(&mm2);
+    if(mm1.numAtomTypes==mm2.numAtomTypes)
+    {
+      for (int i = 0; i<mm1.numAtomTypes;i++) {
+        AtomInfo atom1 = mm1.atoms[i];
+        AtomInfo atom2 = mm2.atoms[i];
+  
+        if(strcmp(atom1.symbol, atom2.symbol)!=0 || atom1.count != atom2.count)
+        {
+          isEqual = false;
         }
+      }
     }
-
-    return true;
-}
-
-
-/**
- * @brief Menggabungkan dua molekul menjadi satu molekul baru.
- *
- * Membuat molekul baru yang berisi semua atom dari m1 dan m2.
- * Jumlah atom dengan simbol yang sama akan dijumlahkan.
- * Jika hasil penggabungan melebihi MAX_ATOM_TYPES, atom tambahan
- * dari m2 yang tidak muat akan diabaikan (sesuai perilaku addAtom).
- *
- * @param m1 Pointer ke Molecule pertama.
- * @param m2 Pointer ke Molecule kedua.
- * @return Molecule Molekul baru hasil penggabungan.
- */
-Molecule combineMolecules(const Molecule *m1, const Molecule *m2) {
+    else {
+      isEqual = false;
+    }
+    return isEqual;
+  }
+  
+  Molecule combineMolecules(const Molecule *m1, const Molecule *m2) {
     Molecule result;
     createMolecule(&result);
-    int biggest = (m1->numAtomTypes < m2->numAtomTypes) ? m2->numAtomTypes : m1->numAtomTypes;
-
-    for(int i = 0; i<biggest; i++){
-        if(i < m1->numAtomTypes){
-            addAtom(&result, m1->atoms[i].symbol, m1->atoms[i].count);
-        }
-        if(i < m2->numAtomTypes){
-            addAtom(&result, m2->atoms[i].symbol, m2->atoms[i].count);
-        }
+  
+    for (int i = 0; i<m1->numAtomTypes;i++) {
+      AtomInfo atom = m1->atoms[i];
+      addAtom(&result, atom.symbol, atom.count);
+    }
+    for (int i = 0; i<m2->numAtomTypes;i++) {
+      AtomInfo atom = m2->atoms[i];
+      addAtom(&result, atom.symbol, atom.count);
     }
     return result;
-}
-
-/**
- * @brief Memeriksa apakah molekul m_sub dapat dikurangkan dari m_total.
- *
- * Pengecekan berhasil jika untuk setiap jenis atom dalam m_sub,
- * jumlah atom tersebut dalam m_total lebih besar atau sama.
- *
- * @param m_total Pointer ke Molecule total.
- * @param m_sub Pointer ke Molecule yang akan dikurangkan.
- * @return true Jika m_sub dapat dikurangkan dari m_total, false jika tidak.
- */
-bool canSubtract(const Molecule *m_total, const Molecule *m_sub) {
-    if(m_sub->numAtomTypes == 0 ){
-        return true;
+  }
+  
+  bool canSubtract(const Molecule *m_total, const Molecule *m_sub) {
+    // TODO: Implementasikan logika pengecekan
+    bool able = true;
+    
+    for (int i = 0; i<m_sub->numAtomTypes; i++) {
+      AtomInfo atom = m_sub->atoms[i];
+      if(atom.count>getAtomCount(m_total, atom.symbol))
+      {
+        able=false;
+        break;
+      }
     }
-
-    sortMolecule(&total);
-    sortMolecule(&sub);
-
-    for(int i = 0; i < total.numAtomTypes; i++){
-        if(total.atoms[i].count < sub.atoms[i].count){
-            return false;
-        }
-    }
-    return true;
-}
-
-/**
- * @brief Mengurangkan molekul m_sub dari m_total dan mengembalikan hasilnya.
- *
- * Fungsi ini pertama-tama akan memanggil canSubtract.
- * Jika canSubtract mengembalikan false, fungsi ini akan mengembalikan
- * molekul kosong.
- * Jika canSubtract mengembalikan true, fungsi ini akan membuat molekul baru
- * yang merupakan salinan m_total, kemudian mengurangi jumlah setiap atom
- * yang ada di m_sub dari molekul baru tersebut. Atom dengan jumlah 0
- * setelah pengurangan sebaiknya diabaikan dalam perhitungan/pencetakan
- * selanjutnya.
- *
- * @param m_total Pointer ke Molecule total.
- * @param m_sub Pointer ke Molecule yang akan dikurangkan.
- * @return Molecule Molekul baru hasil pengurangan, atau molekul kosong jika
- * pengurangan tidak memungkinkan (canSubtract == false).
- */
-Molecule subtractMolecule(const Molecule *m_total, const Molecule *m_sub) {
+    return able;
+  }
+  
+  Molecule subtractMolecule(const Molecule *m_total, const Molecule *m_sub) {
+  
     Molecule result;
     createMolecule(&result);
-
-    if (!canSubtract(m_total, m_sub)) {
-        return result;  // return empty molecule
-    }
-
-    // Copy m_total into result
+  
+    if(!canSubtract(m_total, m_sub))
+      return result;
+  
     result = *m_total;
-
-    // Sort both result and sub to match atom order
-    sortMolecule(&result);
-    sortMolecule(m_sub);
-
-    int subx;
-    for (int i = 0; i < result.numAtomTypes; i++) {
-        if (strcmp(result.atoms[i].symbol,m_sub->atoms[subx].symbol) == 0){
-            result.atoms[i].count -= m_sub->atoms[subx].count;
-            subx++;
+    
+    for (int i = 0; i<m_sub->numAtomTypes; i++) 
+    {
+      for(int j = 0; j<result.numAtomTypes; j++)
+      {
+        if(strcmp(result.atoms[j].symbol, m_sub->atoms[i].symbol))
+        {
+          result.atoms[j].count = result.atoms[j].count - m_sub->atoms[i].count;
         }
+      }
     }
-
+  
     return result;
-}
-
-void printMoleculeFormula(const Molecule *m) {
+  }
+  
+  void printMoleculeFormula(const Molecule *m) {
     // TODO: Implementasikan fungsi ini
     // 1. Jika m->numAtomTypes == 0, cetak "(Kosong)".
     // 2. Urutkan atom berdasarkan simbol untuk output (gunakan fungsi sorting
     // yang sudah diberikan)
     // 3. Cetak formula molekul
     // Contoh output: C6H12O6, H2O, NaCl
-
+  
     if (m->numAtomTypes == 0) {
         printf("(Kosong)\n");
         return;
     }
-
-    Molecule copy1 = *m;
-    sortMolecule(&copy1);
-    for(int i = 0;i<m->numAtomTypes;i++){
-        printf("%s", m->atoms[i].symbol);
-        if(m->atoms[i].count > 1){
-            printf("%d",copy1.atoms[i].count);
-        }
+  
+    Molecule m1 = *m;
+    sortMolecule(&m1);
+  
+    for (int i = 0; i<m1.numAtomTypes;i++) {
+      AtomInfo atom = m1.atoms[i];
+  
+      if(atom.count==0)
+        continue;
+  
+      if(atom.count==1)
+        printf("%s", atom.symbol);
+      else
+        printf("%s%d", atom.symbol, atom.count);
     }
     printf("\n");
-}
+  }
