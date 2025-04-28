@@ -119,7 +119,7 @@ void printKeranjang(KeranjangPisang k){
 
 void insertAt(KeranjangPisang *k, ElType val, IdxType idx){
     int neff = lengthKeranjang(*k);
-    for (int i = neff-1; i>idx; i--){
+    for (int i = neff; i>idx; i--){
         k->contents[i] = k->contents[i-1];
     }
     k->contents[idx] = val;
@@ -141,7 +141,7 @@ void insertLast(KeranjangPisang *k, ElType val){
 void deleteAt(KeranjangPisang *k, ElType *val, IdxType idx){
     int neff = lengthKeranjang(*k);
     *val = k->contents[idx];
-    for(int i = idx; i<neff-1; i++){
+    for(int i = idx; i<neff; i++){
         k->contents[i] = k->contents[i+1];
     }
 }
