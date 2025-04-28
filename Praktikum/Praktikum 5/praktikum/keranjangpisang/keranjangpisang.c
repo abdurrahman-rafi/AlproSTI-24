@@ -140,7 +140,7 @@ void insertLast(KeranjangPisang *k, ElType val){
 
 void deleteAt(KeranjangPisang *k, ElType *val, IdxType idx){
     int neff = lengthKeranjang(*k);
-    val = k->contents[idx];
+    *val = k->contents[idx];
     for(int i = idx; i<neff-1; i++){
         k->contents[i] = k->contents[i+1];
     }
@@ -148,7 +148,7 @@ void deleteAt(KeranjangPisang *k, ElType *val, IdxType idx){
 /* Menghapus elemen di indeks tertentu */
 
 void deleteFirst(KeranjangPisang *k, ElType *val){
-    val = k->contents[0];
+    *val = k->contents[0];
     deleteAt(k, val, 0);
 }
 /* Menghapus elemen pertama */
@@ -156,7 +156,7 @@ void deleteFirst(KeranjangPisang *k, ElType *val){
 
 
 void deleteLast(KeranjangPisang *k, ElType *val){
-    val = k->contents[lengthKeranjang(*k)-1];
+    *val = k->contents[lengthKeranjang(*k)-1];
     k->contents[lengthKeranjang(*k)-1] = MARK;
 }
 /* Menghapus elemen terakhir */
