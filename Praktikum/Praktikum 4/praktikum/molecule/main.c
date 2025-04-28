@@ -18,12 +18,12 @@ int main() {
 
   while(1)
   {
-    scanf("%s", &command);
+    scanf("%s", command);
     if(strcmp(command, "END")==0)
       break;
     if(strcmp(command, "ADD")==0)
     {
-      scanf("%d %s %d", &idx1, &symbol, &count);
+      scanf("%d %s %d", &idx1, symbol, &count);
       addAtom(&molecules[idx1], symbol, count);
     }
     else if(strcmp(command, "PRINT")==0){
@@ -35,7 +35,7 @@ int main() {
       printf("%.3f\n", calculateMolecularWeight(&molecules[idx1]));
     }
     else if(strcmp(command, "GET_COUNT")==0){
-      scanf("%d %s", &idx1, &symbol);
+      scanf("%d %s", &idx1, symbol);
       printf("%d\n", getAtomCount(&molecules[idx1], symbol));
     }
     else if(strcmp(command, "ARE_EQUAL")==0){

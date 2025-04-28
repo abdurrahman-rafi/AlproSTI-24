@@ -207,7 +207,7 @@ void deleteFirst(LabTrack *L, MegaNimons *m){
  * Elemen terakhir disimpan pada *m
  */
 void deleteLast(LabTrack *L, MegaNimons *m){
-
+    L->nEff--;
 }
 
 /**
@@ -261,4 +261,18 @@ void ejectUnstable(LabTrack *L){
 /**
  * Menampilkan hanya MegaNimons dengan powerLevel >= minPower
  */
-void filterByPower(LabTrack L, float minPower);
+void filterByPower(LabTrack L, float minPower){
+    int i = 0;
+    while(i<L.nEff){
+        if(L.contents[i].powerLevel >= minPower){
+            printf("[%d]: ID=%d NAME=%s POWER=%.1d MUT=%s ",i,L.contents[i].name,L.contents[i].powerLevel,L.contents[i].mutationType);
+            if(L.contents[i].isStable=TRUE){
+                printf("STABLE=Yes\n");
+            }else{
+                printf("STABLE=No\n");
+            }
+
+        }
+
+    }
+}

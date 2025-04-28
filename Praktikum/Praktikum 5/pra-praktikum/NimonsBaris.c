@@ -106,6 +106,9 @@ void SetTab(BarisanNimons Tin, BarisanNimons *Tout){
  */
 void SetEl(BarisanNimons *T, IdxType i, ElType v){
     T->baris[i] = v;
+    if(i > T->Neff){
+        T->Neff = i;
+    }
 }
 
 /**

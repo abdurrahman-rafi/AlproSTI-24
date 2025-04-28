@@ -13,6 +13,7 @@
 void inisialisasiList(ListStatik *list, int capacity){
     list->ukuran = 0;
     list->kapasitas = capacity;
+    list->data =(int *)malloc(capacity * sizeof(int));
 }
 
 /**
@@ -26,7 +27,7 @@ void inisialisasiList(ListStatik *list, int capacity){
  * @return true Jika elemen berhasil ditambahkan, false jika list sudah penuh.
  */
 bool tambahElemen(ListStatik *list, int nilai){
-    if(list->ukuran == list->kapasitas){
+    if(list->ukuran >= list->kapasitas){
         return false;
     }
     list->data[list->ukuran] = nilai;
