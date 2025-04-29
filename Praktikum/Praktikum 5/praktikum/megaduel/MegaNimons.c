@@ -195,7 +195,6 @@ void deleteAt(LabTrack *L, IdxType idx, MegaNimons *m){
  */
 void deleteFirst(LabTrack *L, MegaNimons *m){
     deleteAt(L, 0, m);
-    L->nEff--;
 }
 
 /**
@@ -230,7 +229,7 @@ IdxType indexOf(LabTrack L, int id){
 void printLabTrack(LabTrack L){
     for(int i = 0; i<L.nEff; i++){
         printf("[%d]: ID=%d NAME=%s POWER=%.1f MUT=%s ",i,L.contents[i].id,L.contents[i].name,L.contents[i].powerLevel,L.contents[i].mutationType);
-        if(L.contents[i].isStable=TRUE){
+        if(L.contents[i].isStable==TRUE){
             printf("STABLE=Yes\n");
         }else{
             printf("STABLE=No\n");
