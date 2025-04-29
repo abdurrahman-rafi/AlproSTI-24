@@ -3,20 +3,20 @@
 /* *** Type Data *** */
 typedef int IdxType;
 
-/* Struktur MegaNimons */
-typedef struct {
-    int id;                         // ID eksperimen unik
-    char name[30];                  // Nama MegaNimons
-    float powerLevel;              // Power level maksimum MegaNimons
-    char mutationType[20];         // Tipe mutasi (contoh: "fly", "laser", dsb.)
-    boolean isStable;              // TRUE kalau stable, FALSE kalau unstable
-} MegaNimons;
+// /* Struktur MegaNimons */
+// typedef struct {
+//     int id;                         // ID eksperimen unik
+//     char name[30];                  // Nama MegaNimons
+//     float powerLevel;              // Power level maksimum MegaNimons
+//     char mutationType[20];         // Tipe mutasi (contoh: "fly", "laser", dsb.)
+//     boolean isStable;              // TRUE kalau stable, FALSE kalau unstable
+// } MegaNimons;
 
-/* Struktur LabTrack */
-typedef struct {
-    MegaNimons contents[CAPACITY]; // Tempat penyimpanan data MegaNimons
-    int nEff;                      // Jumlah elemen efektif dalam list
-} LabTrack;
+// /* Struktur LabTrack */
+// typedef struct {
+//     MegaNimons contents[CAPACITY]; // Tempat penyimpanan data MegaNimons
+//     int nEff;                      // Jumlah elemen efektif dalam list
+// } LabTrack;
 
 /**
  * Rentang indeks yang digunakan adalah [0 .. CAPACITY-1]
@@ -194,7 +194,7 @@ void deleteAt(LabTrack *L, IdxType idx, MegaNimons *m){
  * Elemen yang dihapus disimpan pada *m
  */
 void deleteFirst(LabTrack *L, MegaNimons *m){
-    deleteAt(&L, 0, &m);
+    deleteAt(L, 0, m);
     L->nEff--;
 }
 
@@ -229,7 +229,7 @@ IdxType indexOf(LabTrack L, int id){
  */
 void printLabTrack(LabTrack L){
     for(int i = 0; i<L.nEff; i++){
-        printf("[%d]: ID=%d NAME=%s POWER=%.1d MUT=%s ",i,L.contents[i].name,L.contents[i].powerLevel,L.contents[i].mutationType);
+        printf("[%d]: ID=%d NAME=%s POWER=%.1f MUT=%s ",i,L.contents[i].id,L.contents[i].name,L.contents[i].powerLevel,L.contents[i].mutationType);
         if(L.contents[i].isStable=TRUE){
             printf("STABLE=Yes\n");
         }else{
@@ -254,7 +254,7 @@ boolean isMoreStable(MegaNimons m1, MegaNimons m2){
 
 MegaNimons resolveDuel(MegaNimons m1,MegaNimons m2){
     MegaNimons winner;
-    if(!isPowerEqual(m1,m2)){
+    if(isPowerEqual(m1,m2)){
         if(m1.isStable == m2.isStable){
             winner = (m1.id < m2.id) ? m1 : m2;
         }
@@ -265,10 +265,10 @@ MegaNimons resolveDuel(MegaNimons m1,MegaNimons m2){
     else{
         winner = (m1.powerLevel > m2.powerLevel) ? m1 : m2;
     }
+    return winner;
 }
 
 void duelOnce(MegaNimons m1,MegaNimons m2){
     MegaNimons winner = resolveDuel(m1,m2);
     printf("Duel: %s (%1.f) vs %s (%1.f)\nWinner: %s\n", m1.name, m1.powerLevel, m2.name, m2.powerLevel, winner.name);
-
 }
