@@ -2,33 +2,17 @@
 #include "MegaDuel.h"
 
 void runMegaDuel(LabTrack *L){
-    // MegaNimons left = L->contents[0];
-    // MegaNimons right = L->contents[1];
-    // int indright = 1;
-    // printf("\n");
-    // while(length(*L) != 1){
-    //    printf("== DUEL ROUND ==\n");
-    //    printf("Duel: %s (%.1d) vs %s (%.1d)\n", left.name, left.powerLevel, right.name, right.powerLevel);
-    //    MegaNimons winner = (left.powerLevel > right.powerLevel) ? left : right;
-    //    MegaNimons loser = (left.powerLevel > right.powerLevel) ? right : left;
+    while(L->nEff > 1){
+        print("\n== DUEL ROUND ==\n");
+        duelOnce(L->contents[0], L->contents[1]);
 
-    //    printf("Winner: %s\n\n",winner.powerLevel);
-    // }
-    
-    while(length(*L) != 1){
-        printf("\n");
-        MegaNimons left = L->contents[0];
-        MegaNimons right = L->contents[1];
-        printf("== DUEL ROUND ==\n");
-        duelOnce(left, right);
-        left = resolveDuel(left,right);
-        L->contents[0] = left;
-        printf("\n");
-
-        MegaNimons temp;
-        deleteAt(L, 1, &temp);
-        
+        MegaNimons winner = resolveDuel(L->contents[0], L->contents[1]);
+        if(winner.id == L->contents[0].id){
+            MegaNimons temp;
+            deleteAt(&L, indexOf(*L, L->contents[1].id), &temp);
+        }
     }
+
     printf("\n== The Champion: %s ==\n", L->contents[0]);
 }
 
