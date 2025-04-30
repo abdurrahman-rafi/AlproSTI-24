@@ -1,41 +1,41 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "ListStatik.h"
+// #include "ListStatik.h"
 
 #define MAX_DIGITS 1000
 
-// typedef struct {
-//     int *data;
-//     int ukuran;
-//     int kapasitas;
-// } ListStatik;
+typedef struct {
+    int *data;
+    int ukuran;
+    int kapasitas;
+} ListStatik;
 
-// void inisialisasiList(ListStatik *list, int capacity){
-//     list->ukuran = 0;
-//     list->kapasitas = capacity;
-//     list->data = (int *)malloc(capacity * sizeof(int));
-// }
+void inisialisasiList(ListStatik *list, int capacity){
+    list->ukuran = 0;
+    list->kapasitas = capacity;
+    list->data = (int *)malloc(capacity * sizeof(int));
+}
 
-// int tambahElemen(ListStatik *list, int nilai){
-//     if (list->ukuran >= list->kapasitas) {
-//         return 0;
-//     }
-//     list->data[list->ukuran] = nilai;
-//     list->ukuran++;
-//     return 1;
-// }
+int tambahElemen(ListStatik *list, int nilai){
+    if (list->ukuran >= list->kapasitas) {
+        return 0;
+    }
+    list->data[list->ukuran] = nilai;
+    list->ukuran++;
+    return 1;
+}
 
-// void tampilkanList(ListStatik list){
-//     if (list.ukuran == 0){
-//         printf("List kosong");
-//     } else {
-//         for (int i = list.ukuran - 1; i >= 0; i--){
-//             printf("%d", list.data[i]);
-//         }
-//     }
-//     printf("\n");
-// }
+void tampilkanList(ListStatik list){
+    if (list.ukuran == 0){
+        printf("List kosong");
+    } else {
+        for (int i = list.ukuran - 1; i >= 0; i--){
+            printf("%d", list.data[i]);
+        }
+    }
+    printf("\n");
+}
 
 void tambahBesar(ListStatik *result, ListStatik *num1, ListStatik *num2) {
     int i = 0, carry = 0;
