@@ -1,6 +1,7 @@
 #include "map.h"
 #include <stdio.h>
-int main() { 
+
+int main(){ 
     Map *map = create_map(5);
     char *nimons[] = {"Kebin", "Stuart", "Dave", "Pop", "Larry", "Mel"};
     for (int i = 0; i <= 5; i++) {

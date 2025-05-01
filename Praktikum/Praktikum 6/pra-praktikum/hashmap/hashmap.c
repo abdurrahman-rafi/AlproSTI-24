@@ -16,10 +16,22 @@ address Hash(keytype K){
 }
 
 int Value(HashMap h, keytype key){
-    return h.Elements[Hash(key)].value;
+    address i = Hash(key);
+    int start = i;
+    while (h.Elements[i].key != Undefined) {
+        if (h.Elements[i].key == key)
+            return h.Elements[i].value;
+        i = (i + 1) % MaxEl;
+        if (i == start) break; // full circle
+    }
+    return Undefined;
 }
 
+
 void Insert(HashMap *h, keytype key, valuetype value){
+    if(h->Count == MaxEl){
+        return;
+    }
     address i = Hash(key);
     //Collision
     while (h->Elements[i].key != Undefined && h->Elements[i].key != key){
