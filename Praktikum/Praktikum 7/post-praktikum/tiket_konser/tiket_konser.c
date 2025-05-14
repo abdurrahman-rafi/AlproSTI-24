@@ -97,9 +97,9 @@ ElType dequeue (Queue *Q){
         }
 
         return var;
-    }else{
-        return var;
-    }
+        }else{
+            return var;
+        }
     
 
 }
