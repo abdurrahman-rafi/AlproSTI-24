@@ -29,7 +29,21 @@ void pop(Stack *s, ElType *val){
 
 /*********** Operasi Tambahan **********/
 void copyStack(Stack *sres, Stack s){
-    *sres = s;
+    CreateStack(sres);
+    Stack temp;
+    CreateStack(&temp);
+
+    while(!isEmpty(s)){
+        ElType val;
+        pop(&s, &val);
+        push(&temp, val);
+    }
+
+    while(!isEmpty(temp)){
+        ElType val;
+        pop(&temp, &val);
+        push(sres, val);
+    }
 }
 /* Menyalin isi Stack s ke dalam Stack sres
 I.S. sres mungkin kosong
@@ -77,15 +91,21 @@ Notes: [ 1, 2, 3 ]
 */
 
 void mergeStack(Stack *sres, Stack *s1, Stack *s2){
-    copyStack(sres, *s1);
-    while(s1->idxTop != IDX_UNDEF){
-        ElType temp;
-        pop(s2,&temp);
+    Stack temp;
+    CreateStack(&temp);
+
+    while(!isEmpty(*s2)){
+        ElType var;
+        pop(s2, &var);
+        push(&temp, var);
     }
-    while(s2->idxTop != IDX_UNDEF){
-        ElType temp;
-        pop(s2,&temp);
-        push(sres,temp);
+
+    copyStack(sres, *s1);
+    
+    while(!isEmpty(temp)){
+        ElType var;
+        pop(&temp,&var);
+        push(sres,var);
     }
 
 }

@@ -33,6 +33,11 @@ void CreateQueue (Queue *Q){
 
 /* *** Primitif Add/Delete *** */
 void enqueue (Queue *Q, ElType P){
+
+    if(IsFull(*Q)){
+        return;
+    }
+
     if(IsEmpty(*Q)){
         Q->idxHead = 0;
         Q->idxTail = 0;
@@ -40,24 +45,33 @@ void enqueue (Queue *Q, ElType P){
         // printf("test out\n");
 
     }else{
+
         if(!isDuplicateSN(*Q,P.seatNumber)){
-        int index;
-        int i = Q->idxTail;
+        int pos = Q->idxHead;
         // printf("%d %d", P.queueNumber, Q->Tab[Q->idxTail].queueNumber);
-        while(P.queueNumber < Q->Tab[i].queueNumber && i>=0){
-            // printf("%s\n", Q->Tab[Q->idxTail].nama);
-            i--;
-            // printf("test out %d\n",i);
+        // while(P.queueNumber < Q->Tab[i].queueNumber && i>=0){
+        //     // printf("%s\n", Q->Tab[Q->idxTail].nama);
+        //     i--;
+        //     // printf("test out %d\n",i);
+        // }
+        while(pos <= Q->idxTail && Q->Tab[pos].queueNumber <= P.queueNumber){
+            pos++;
         }
-        i++;
-        for(int j = Q->idxTail+1; j>i; j--){
-            Q->Tab[j]=Q->Tab[j-1];
+        
+        if(Q->idxTail < IDX_MAX){
+            for(int i = Q->idxTail+1; i > pos; i--){
+            Q->Tab[i]=Q->Tab[i-1];
+            }
+
+            Q->Tab[pos] = P;
+            Q->idxTail++;
+
         }
-        Q->Tab[i] = P;
-        Q->idxTail++;
+        
         }
+
     }
-    
+    return;
 
 }
 /* Proses: Menambahkan P ke dalam antrean jika dan hanya jika: */
@@ -68,19 +82,25 @@ void enqueue (Queue *Q, ElType P){
         Semakin kecil, semakin berada di depan antrean
         IDX_TAIL akan "mundur" ke belakang */
 ElType dequeue (Queue *Q){
+    ElType var = {"", 0, 0};
     if(!IsEmpty(*Q)){
-        ElType var;
+        
         var = Q->Tab[Q->idxHead];
-        for(int i = 0; i<Q->idxTail-1;i++){
+        for(int i = Q->idxHead; i<Q->idxTail;i++){
             Q->Tab[i] = Q->Tab[i+1];
         }
-        Q->idxTail--;
-        if(0 > Q->idxTail){
-            Q->idxHead = IDX_UNDEF;
-            Q->idxTail = IDX_UNDEF;
+
+        if(Q->idxHead == Q->idxTail){
+            CreateQueue(Q);
+        }else {
+            Q->idxTail--;
         }
+
+        return var;
+    }else{
         return var;
     }
+    
 
 }
 /* Proses: Menghapus idxHead pada Q dengan aturan FIFO, lalu mengembalikan nilainya */
@@ -98,6 +118,10 @@ ElType peek (Queue Q){
 /* F.S. Mengembalikan nilai pada idxHead */
 
 boolean isDuplicateSN(Queue Q, int sn){
+    if(IsEmpty(Q)){
+        return false;
+    }
+
     for(int i = IDX_HEAD(Q); i<=IDX_TAIL(Q); i++){
         if (Q.Tab[i].seatNumber == sn) {
             return true;
@@ -109,6 +133,11 @@ boolean isDuplicateSN(Queue Q, int sn){
 
 /* *** Display Queue *** */
 void displayQueue(Queue q){
+     if (IsEmpty(q)) {
+        printf("[]\n");
+        return;
+    }
+
     printf("[");
     for(int i = q.idxHead; i<=q.idxTail; i++){
         printf("(%s-%d-%d)",q.Tab[i].nama, q.Tab[i].seatNumber, q.Tab[i].queueNumber);
@@ -118,6 +147,7 @@ void displayQueue(Queue q){
     }
     printf("]\n");
     //[(Kebin-3-1), (Pop-1-2), (Toto-2-3)]
+    return;
 
 }
 /* Proses : Menuliskan isi Queue dengan traversal; Queue ditulis di antara kurung 
