@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "listlinier.h"
+#include "listfilm.h"
 
 /* PROTOTYPE */
 /****************** TEST LIST KOSONG ******************/
@@ -132,7 +132,7 @@ void InsertFirst (List *L, address P){
 }
 /* I.S. Sembarang, P sudah dialokasi  */
 /* F.S. Menambahkan elemen ber-address P sebagai elemen pertama */
-void InsertAfter (address P, address Prec){
+void InsertAfter (List *L, address P, address Prec){
     P->next = Prec->next;
     Prec->next = P;
 }
@@ -165,8 +165,8 @@ void DelFirst (List *L, address *P){
 void DelP (List *L, infotype X){
     if(IsEmpty(*L)) return;
     if(L->First->next == Nil){
-        address *temp = L->First;
-        Dealokasi(temp);
+        address temp = L->First;
+        Dealokasi(&temp);
         CreateEmpty(L);
     }else{
         address p = L->First;
@@ -204,8 +204,8 @@ void DelP (List *L, infotype X){
 /* List mungkin menjadi kosong karena penghapusan */
 void DelLast (List *L, address *P){
     if(L->First->next == Nil){
-        address *temp = L->First;
-        Dealokasi(temp);
+        address temp = L->First;
+        Dealokasi(&temp);
         CreateEmpty(L);
     }else{
         address p = Nil;
@@ -280,123 +280,62 @@ int NbElmt (List L){
 }
 /* Mengirimkan banyaknya elemen list; mengirimkan 0 jika list kosong */
 
-/*** Prekondisi untuk Max/Min/rata-rata : List tidak kosong ***/
-infotype Max (List L){
-    address p = L.First;
-    infotype max = p->info;
-
-    while(p!=Nil){
-        if(p->info > max){
-            max = p->info;
-        }
-        p = p->next;
+/****************** Fungsi Tambahan ******************/
+void RemoveGenre(List *L, infotype X){
+    if(IsEmpty(*L)) {
+        printf("Tidak ada film yang memiliki genre dengan ID: %d\n",X);
+        return;
     }
-    return max;
-}
-/* Mengirimkan nilai info(P) yang maksimum */
-address AdrMax (List L){
-    infotype maximum = Max(L);
-
-    address p = L.First;
-    while(p != Nil){
-        if(p->info == maximum){
-            return p;
-        }
-        p = p->next;
-    }
-    return p;
-}
-/* Mengirimkan address P, dengan info(P) yang bernilai maksimum */
-infotype Min (List L){
-    address p = L.First;
-    infotype min = p->info;
-
-    while(p!=Nil){
-        if(p->info < min){
-            min = p->info;
-        }
-        p = p->next;
-    }
-    return min;
-}
-/* Mengirimkan nilai info(P) yang minimum */
-address AdrMin (List L){
-    infotype minimum = Min(L);
-
-    address p = L.First;
-    while(p != Nil){
-        if(p->info == minimum){
-            return p;
-        }
-        p = p->next;
-    }
-    return p;
-}
-/* Mengirimkan address P, dengan info(P) yang bernilai minimum */
-float Average (List L){
-    float total = 0;
-    address p = L.First;
-    float count = 0;
-
-    while(p != Nil){
-        total += p->info;
-        count++;
-        p = p->next;
-    }
-
-    float result = total/count;
-    return result;
-
     
-}
-/* Mengirimkan nilai rata-rata info(P) */
-
-/****************** PROSES TERHADAP LIST ******************/
-
-void InversList (List *L){
-    address prev = Nil;
+    // printf("angka awal %d\n", L->First->info);
+    int count = 0;
     address current = L->First;
-    address next;
+    address prev = Nil;
+    
 
     while(current != Nil){
-        next = current->next;
-        current->next = prev;
-        prev = current;
-        current = next;
-    }
+        // printf("angka sekarang %d\n", current->info);
+            if (current == L->First && current->info == X){
+                // printf("masuk cek head\n");
+                L->First = current->next;
+                address temp = current;
+                current = temp->next;
+                prev = current;
+                free(temp);
+                count++;
+            }
+            else if(current->info == X){
+                // printf("angka %d\n", current->info);
+                address temp = current;
+                current = temp->next;
+                prev->next = current;
+                free(temp);
+                count++;
+            }else{
+                prev = current;
+                current = current->next;
 
-    L->First = prev;
+            }
+        }
+        
+
+    
+    if(count == 0){
+        printf("Tidak ada film yang memiliki genre dengan ID: %d\n",X);
+    }else{
+        printf("Berhasil menghapus %d film\n",count);
+    }
+    if(L->First == NULL) CreateEmpty(L);
 
 }
-/* I.S. sembarang. */
-/* F.S. elemen list dibalik : */
-/* Elemen terakhir menjadi elemen pertama, dan seterusnya. */
-/* Membalik elemen list, tanpa melakukan alokasi/dealokasi. */
-
-void Konkat1 (List *L1, List *L2, List *L3){
-    CreateEmpty(L3);
-    address p = L1->First;
-    while(p!=Nil){
-        InsVLast(L3,p->info);
-        // address temp = p;
-        p = p->next;
-        // free(temp);
-    }
-
-     p = L2->First;
-    while(p!=Nil){
-        InsVLast(L3,p->info);
-        // address temp = p;
-        p = p->next;
-        // free(temp);
-    }
-
-    CreateEmpty(L1);
-    CreateEmpty(L2);
-}
-/* I.S. L1 dan L2 sembarang */
-/* F.S. L1 dan L2 kosong, L3 adalah hasil konkatenasi L1 & L2 */
-/* Konkatenasi dua buah list : L1 dan L2    */
-/* menghasilkan L3 yang baru (dengan elemen list L1 dan L2) */
-/* dan L1 serta L2 menjadi list kosong.*/
-/* Tidak ada alokasi/dealokasi pada prosedur ini */
+/* I.S.  : List L terdefinisi, mungkin kosong. 
+           X merupakan ID genre (tipe integer) yang akan dihapus. */
+/* F.S.  : Semua film dalam list yang memiliki genre dengan ID = X telah dihapus. 
+           Setiap elemen yang dihapus akan didealokasi.
+           Mencetak banyaknya film yang terhapus dengan format
+           "Berhasil menghapus <banyaknya> film",
+           Jika tidak ada film yang dihapus maka tampilkan
+           "Tidak ada film yang memiliki genre dengan ID: <X>"
+           Setiap output diakhiri endline */
+/* Proses: Melakukan traversal terhadap list, menghapus node yang memiliki genre = X, 
+           serta mencetak total film yang berhasil dihapus. */

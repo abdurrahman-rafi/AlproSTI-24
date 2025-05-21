@@ -29,7 +29,6 @@ typedef struct {
 #define Info(P) (P)->info
 #define Next(P) (P)->next
 #define First(L) ((L).First)
-
 /* PROTOTYPE */
 /****************** TEST LIST KOSONG ******************/
 boolean IsEmpty (List L);
@@ -152,5 +151,7 @@ void Konkat1 (List *L1, List *L2, List *L3);
 /* menghasilkan L3 yang baru (dengan elemen list L1 dan L2) */
 /* dan L1 serta L2 menjadi list kosong.*/
 /* Tidak ada alokasi/dealokasi pada prosedur ini */
+
+void SortListAsc(List *L);
 
 #endif

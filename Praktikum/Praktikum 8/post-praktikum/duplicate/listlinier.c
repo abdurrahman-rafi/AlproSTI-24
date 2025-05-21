@@ -165,8 +165,8 @@ void DelFirst (List *L, address *P){
 void DelP (List *L, infotype X){
     if(IsEmpty(*L)) return;
     if(L->First->next == Nil){
-        address *temp = L->First;
-        Dealokasi(temp);
+        address temp = L->First;
+        Dealokasi(&temp);
         CreateEmpty(L);
     }else{
         address p = L->First;
@@ -204,8 +204,8 @@ void DelP (List *L, infotype X){
 /* List mungkin menjadi kosong karena penghapusan */
 void DelLast (List *L, address *P){
     if(L->First->next == Nil){
-        address *temp = L->First;
-        Dealokasi(temp);
+        address temp = L->First;
+        Dealokasi(&temp);
         CreateEmpty(L);
     }else{
         address p = Nil;
@@ -321,6 +321,7 @@ infotype Min (List L){
 }
 /* Mengirimkan nilai info(P) yang minimum */
 address AdrMin (List L){
+    // if(IsEmpty(L)) return;
     infotype minimum = Min(L);
 
     address p = L.First;
@@ -400,3 +401,53 @@ void Konkat1 (List *L1, List *L2, List *L3){
 /* menghasilkan L3 yang baru (dengan elemen list L1 dan L2) */
 /* dan L1 serta L2 menjadi list kosong.*/
 /* Tidak ada alokasi/dealokasi pada prosedur ini */
+
+/****************** Fungsi Tambahan ******************/
+void SortListAsc(List *L){
+    if(IsEmpty(*L)) return;
+    
+    boolean swapped;
+    address p1,p2;
+    infotype temp;
+
+    do {
+        swapped = false;
+        p1 = L->First;
+
+        while(p1->next != Nil){
+            p2 = p1->next;
+            if(p1->info > p2->info){
+                temp = p1->info;
+                p1->info = p2->info;
+                p2->info = temp;
+                swapped = true;
+            }
+            p1 =p1->next;
+        }
+    } while(swapped);
+}
+
+void RemoveDuplicate(List *L){
+    if(IsEmpty(*L)) return;
+    address current = L->First;
+
+    while(current != Nil){
+        address check = current;
+        while(check->next != Nil){
+            if(check->next->info == current->info){
+                address temp = check->next;
+                check->next = temp->next;
+                free(temp);
+            }else{
+                check = check->next;
+            }
+        }
+        current = current->next;
+    }
+
+    return;
+}
+/* I.S. Sembarang (list mungkin kosong atau tidak terurut) */
+/* F.S. Elemen-elemen list terurut secara menaik berdasarkan info(P) */
+/* Hint: Silakan gunakan salah satu algoritma sorting yang ada pada 
+			   slide dan lakukan penyesuaian dengan linkedlist (misal: Bubble Sort Efficient Algorithm) */
